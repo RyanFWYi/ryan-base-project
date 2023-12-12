@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class RListUtil extends ListUtil {
 
     /**
-     * topN算法
+     * topN算法(优化)
      *
      * @param items 运算对象
      * @param n     topN
