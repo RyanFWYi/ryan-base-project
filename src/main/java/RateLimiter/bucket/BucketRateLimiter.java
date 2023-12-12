@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BucketRateLimiter {
 
+    EnumBucketType type();
+
     int capacity() default 100;
 
     int rate() default 10;

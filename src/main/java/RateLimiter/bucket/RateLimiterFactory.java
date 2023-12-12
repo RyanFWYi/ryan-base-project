@@ -1,7 +1,4 @@
-package RateLimiter;
-
-import RateLimiter.LeakyBucket.LeakyBucket;
-import RateLimiter.bucket.TokenBucket;
+package RateLimiter.bucket;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

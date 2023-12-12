@@ -1,4 +1,4 @@
-package RateLimiter.LeakyBucket;
+package RateLimiter.bucket;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Ryan.Yi
  */
-public class LeakyBucket {
+public class LeakyBucket implements BaseBucket {
 
     /**
      * 桶容量
@@ -35,6 +35,7 @@ public class LeakyBucket {
         this.leakRate = leakRatePerSecond;
     }
 
+    @Override
     public synchronized boolean tryAcquire() {
         leakWater();
 
@@ -57,7 +58,6 @@ public class LeakyBucket {
         } else {
             water = new AtomicInteger(0);
         }
-
         lastLeakTime = new AtomicLong(now);
     }
 

@@ -1,6 +1,5 @@
 package RateLimiter.bucket;
 
-import RateLimiter.RateLimiterFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class RateLimiterAspect {
+public class BucketRateLimiterAspect {
 
     @Pointcut("@annotation(RateLimiter.bucket.BucketRateLimiter)")
     public void rateLimiter() {
@@ -20,11 +19,16 @@ public class RateLimiterAspect {
     public Object around(ProceedingJoinPoint joinPoint, BucketRateLimiter bucketRateLimiter) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String key = signature.getMethod().getDeclaringClass().getName() + "." + signature.getMethod().getName();
-        TokenBucket bucket = RateLimiterFactory.getBucket(key, bucketRateLimiter.capacity(), bucketRateLimiter.rate());
+        BaseBucket bucket;
+        if (bucketRateLimiter.type().equals(EnumBucketType.TOKEN_BUCKET)) {
+            bucket = RateLimiterFactory.getBucket(key, bucketRateLimiter.capacity(), bucketRateLimiter.rate());
+        } else {
+            bucket = RateLimiterFactory.getLeakyBucket(key, bucketRateLimiter.capacity(), bucketRateLimiter.rate());
+        }
         if (bucket.tryAcquire()) {
             return joinPoint.proceed();
         } else {
-            throw new RuntimeException("请稍后重试");
+            throw new RuntimeException("Too many requests");
         }
     }
 

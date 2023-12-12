@@ -4,9 +4,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 令牌桶限流
+ *
  * @author Ryan.Yi
  */
-public class TokenBucket {
+public class TokenBucket implements BaseBucket {
 
     /**
      * 令牌桶的容量
@@ -35,6 +36,7 @@ public class TokenBucket {
         this.lastRefillTimestamp = new AtomicLong(System.currentTimeMillis());
     }
 
+    @Override
     public synchronized boolean tryAcquire() {
         refill();
         if (availableTokens.get() > 0) {
