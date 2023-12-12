@@ -1,4 +1,4 @@
-package src;
+package RateLimiter.bucket;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -7,14 +7,30 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Ryan.Yi
  */
 public class TokenBucket {
+
+    /**
+     * 令牌桶的容量
+     */
     private final long capacity;
-    private final long refillRate; // 令牌每毫秒填充的速率
-    private AtomicLong lastRefillTimestamp;
-    private AtomicLong availableTokens;
+
+    /**
+     * 每毫秒的填充速率
+     */
+    private final long refillRate;
+
+    /**
+     * 上次填充令牌的时间戳
+     */
+    private final AtomicLong lastRefillTimestamp;
+
+    /**
+     * 当前可用的令牌数量
+     */
+    private final AtomicLong availableTokens;
 
     public TokenBucket(long capacity, long refillRatePerSecond) {
         this.capacity = capacity;
-        this.refillRate = refillRatePerSecond / 1000; // 转化为每毫秒的速率
+        this.refillRate = refillRatePerSecond;
         this.availableTokens = new AtomicLong(capacity);
         this.lastRefillTimestamp = new AtomicLong(System.currentTimeMillis());
     }
@@ -31,14 +47,12 @@ public class TokenBucket {
     private void refill() {
         long now = System.currentTimeMillis();
         long elapsedTime = now - lastRefillTimestamp.get();
-        long tokensToAdd = elapsedTime * refillRate;
-        availableTokens.addAndGet(tokensToAdd);
-        availableTokens.set(Math.min(capacity, availableTokens.get())); // 确保不超过桶的容量
+        long tokensToAdd = (elapsedTime / 1000) * refillRate;
+        availableTokens.updateAndGet(n -> Math.min(capacity, n + tokensToAdd));
         lastRefillTimestamp.set(now);
     }
     public static void main(String[] args) {
-        TokenBucket bucket = new TokenBucket(10, 5); // 桶容量10，每秒填充5个令牌
-
+        TokenBucket bucket = new TokenBucket(10, 5);
         for (int i = 0; i < 15; i++) {
             System.out.println("Request " + i + ": " + bucket.tryAcquire());
         }
