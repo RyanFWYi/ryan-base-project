@@ -51,11 +51,5 @@ public class TokenBucket {
         availableTokens.updateAndGet(n -> Math.min(capacity, n + tokensToAdd));
         lastRefillTimestamp.set(now);
     }
-    public static void main(String[] args) {
-        TokenBucket bucket = new TokenBucket(10, 5);
-        for (int i = 0; i < 15; i++) {
-            System.out.println("Request " + i + ": " + bucket.tryAcquire());
-        }
-    }
 
 }

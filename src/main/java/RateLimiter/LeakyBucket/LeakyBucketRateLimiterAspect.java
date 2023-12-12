@@ -1,4 +1,4 @@
-package RateLimiter.bucket;
+package RateLimiter.LeakyBucket;
 
 import RateLimiter.RateLimiterFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class RateLimiterAspect {
+public class LeakyBucketRateLimiterAspect {
 
-    @Pointcut("@annotation(RateLimiter.bucket.BucketRateLimiter)")
-    public void rateLimiter() {
+    @Pointcut("@annotation(RateLimiter.LeakyBucket.LeakyBucketRateLimiter)")
+    public void leakyBucketRateLimiter() {
     }
 
-    @Around("@annotation(bucketRateLimiter)")
-    public Object around(ProceedingJoinPoint joinPoint, BucketRateLimiter bucketRateLimiter) throws Throwable {
+    @Around("@annotation(leakyBucketRateLimiter)")
+    public Object around(ProceedingJoinPoint joinPoint, LeakyBucketRateLimiter leakyBucketRateLimiter) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String key = signature.getMethod().getDeclaringClass().getName() + "." + signature.getMethod().getName();
-        TokenBucket bucket = RateLimiterFactory.getBucket(key, bucketRateLimiter.capacity(), bucketRateLimiter.rate());
+        LeakyBucket bucket = RateLimiterFactory.getLeakyBucket(key, leakyBucketRateLimiter.capacity(), leakyBucketRateLimiter.leakRate());
         if (bucket.tryAcquire()) {
             return joinPoint.proceed();
         } else {
