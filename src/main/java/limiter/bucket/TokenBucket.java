@@ -1,4 +1,4 @@
-package RateLimiter.bucket;
+package limiter.bucket;
 
 import java.util.concurrent.atomic.AtomicLong;
 

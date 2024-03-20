@@ -1,4 +1,4 @@
-package RateLimiter.SlidingWindow;
+package limiter.window;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,4 +1,4 @@
-package RateLimiter.bucket;
+package limiter.bucket;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BucketRateLimiterAspect {
 
-    @Pointcut("@annotation(RateLimiter.bucket.BucketRateLimiter)")
+    @Pointcut("@annotation(limiter.bucket.BucketRateLimiter)")
     public void rateLimiter() {
     }
 
